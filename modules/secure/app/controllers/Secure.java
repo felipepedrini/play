@@ -12,6 +12,18 @@ public class Secure extends Controller {
 
     @Before(unless={"login", "authenticate", "logout"})
     static void checkAccess() throws Throwable {
+    	LoginNotRequired loginNotRequired = getActionAnnotation(LoginNotRequired.class);
+
+		if (loginNotRequired != null) {
+		    return;
+		}
+	
+		loginNotRequired = getControllerInheritedAnnotation(LoginNotRequired.class);
+	
+		if (loginNotRequired != null) {
+		    return;
+		}
+
         // Authent
         if(!session.contains("username")) {
             flash.put("url", "GET".equals(request.method) ? request.url : "/"); // seems a good default
@@ -199,3 +211,4 @@ public class Secure extends Controller {
     }
 
 }
+
